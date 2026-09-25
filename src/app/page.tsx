@@ -3,6 +3,7 @@ import { ArrowRight, Mail, Users } from "lucide-react";
 import { Header } from "@/components/home/Header";
 import { Footer } from "@/components/home/Footer";
 import { AudienceCards } from "@/components/home/AudienceCards";
+import { FollowSection } from "@/components/home/FollowSection";
 import { Container } from "@/components/ui/Container";
 
 const infoLinks = [
@@ -69,6 +70,8 @@ export default function Home() {
             ))}
           </Container>
         </section>
+
+        <FollowSection />
       </main>
       <Footer />
     </>
