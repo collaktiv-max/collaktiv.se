@@ -56,12 +56,7 @@ async function addPostgres(entry: RegionInterest) {
 const DATA_FILE = path.join(process.cwd(), "data", "region-interest.json");
 
 async function addFile(entry: RegionInterest) {
-  let entries: RegionInterest[] = [];
-  try {
-    entries = JSON.parse(await readFile(DATA_FILE, "utf-8")) as RegionInterest[];
-  } catch (err) {
-    if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
-  }
+  const entries = await readAllFromFile();
   if (entries.some((e) => e.region === entry.region && e.email === entry.email)) return;
   entries.push(entry);
   await mkdir(path.dirname(DATA_FILE), { recursive: true });
@@ -76,4 +71,42 @@ export async function addRegionInterest(region: Region, email: string) {
     createdAt: new Date().toISOString(),
   };
   await (databaseUrl ? addPostgres(entry) : addFile(entry));
+}
+
+// --- Läsning och borttagning (för /admin) ---
+
+async function readAllFromFile(): Promise<RegionInterest[]> {
+  try {
+    return JSON.parse(await readFile(DATA_FILE, "utf-8")) as RegionInterest[];
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw err;
+  }
+}
+
+export async function getAllRegionInterest(): Promise<RegionInterest[]> {
+  if (!databaseUrl) {
+    const entries = await readAllFromFile();
+    return entries.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  }
+  await ensureTable();
+  const rows = (await sql()`
+    SELECT id, region, email, created_at FROM region_interest ORDER BY created_at DESC
+  `) as Array<{ id: string; region: Region; email: string; created_at: string }>;
+  return rows.map((r) => ({
+    id: r.id,
+    region: r.region,
+    email: r.email,
+    createdAt: new Date(r.created_at).toISOString(),
+  }));
+}
+
+export async function deleteRegionInterest(id: string) {
+  if (!databaseUrl) {
+    const entries = await readAllFromFile();
+    await writeFile(DATA_FILE, JSON.stringify(entries.filter((e) => e.id !== id), null, 2), "utf-8");
+    return;
+  }
+  await ensureTable();
+  await sql()`DELETE FROM region_interest WHERE id = ${id}`;
 }

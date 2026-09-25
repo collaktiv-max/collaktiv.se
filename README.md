@@ -41,6 +41,23 @@ Anmälningarna skickas till `POST /api/regionintresse` och sparas via
   `region_interest` med kolumnerna region, e-post och datum. Samma e-post i
   samma region sparas bara en gång.
 
+## Adminsidan (/admin)
+
+På `/admin` ser du alla anmälningar: antal totalt, antal per region, en
+lista där du kan söka och filtrera, och en knapp som laddar ner allt som
+CSV (öppnas i Excel eller Numbers). Du kan också ta bort en anmälan, till
+exempel om någon ber att bli borttagen.
+
+Du slår på sidan genom att sätta ett lösenord:
+
+1. I Vercel: **Settings → Environment Variables**, lägg till
+   `ADMIN_PASSWORD` med ett långt lösenord (minst 12 tecken).
+2. Gör en ny driftsättning med **Deployments → ⋯ → Redeploy**.
+3. Gå till `collaktiv.se/admin` och logga in.
+
+Om du byter lösenordet (och gör en Redeploy) loggas alla som är inloggade
+ut. Lokalt kör du `ADMIN_PASSWORD=ettlangtlosenord npm run dev`.
+
 ## Driftsättning på Vercel
 
 1. På [vercel.com](https://vercel.com): **Add New → Project**, välj
