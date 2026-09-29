@@ -84,10 +84,11 @@ export function AudienceCards() {
           </div>
           <article className={`${ticketBase} flex-1 bg-[var(--color-brand-primary)] text-white`}>
             <h2 className="text-[1.75rem] font-extrabold leading-[1.08] tracking-tight text-balance sm:text-[2.1rem]">
-              Varje resa <span className="text-[var(--color-brand-accent)]">ger rabatt.</span>
+              Åk kollektivt, <span className="text-[var(--color-brand-accent)]">bli belönad!</span>
             </h2>
             <p className="mt-3 max-w-[34ch] text-[15.5px] font-semibold text-white/85">
-              Hos lokala favoriter när du väljer bussen.
+              Få resepoäng när du åker kollektivt och växla dina resepoäng mot
+              erbjudanden hos lokala företag.
             </p>
 
             {WAITLIST_URL ? (
