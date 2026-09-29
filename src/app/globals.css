@@ -111,3 +111,19 @@ body {
   .bus-ride, .bus-face { animation: none; }
   .bus-ride { left: 50%; }
 }
+
+/* Biljett med grön kant: själva biljetten är grön och en ljus insida
+   ligger 2px in, med 2px större hack, så att kanten följer även hacken. */
+.ticket-inner {
+  --edge: 2px;
+  --inner-notch: calc(var(--notch) + var(--edge));
+  --inner-y: calc(100% - var(--stub) + var(--edge));
+  -webkit-mask:
+    radial-gradient(circle var(--inner-notch) at calc(0px - var(--edge)) var(--inner-y), transparent 98%, #000),
+    radial-gradient(circle var(--inner-notch) at calc(100% + var(--edge)) var(--inner-y), transparent 98%, #000);
+  -webkit-mask-composite: source-in;
+  mask:
+    radial-gradient(circle var(--inner-notch) at calc(0px - var(--edge)) var(--inner-y), transparent 98%, #000),
+    radial-gradient(circle var(--inner-notch) at calc(100% + var(--edge)) var(--inner-y), transparent 98%, #000);
+  mask-composite: intersect;
+}

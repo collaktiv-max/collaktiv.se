@@ -35,7 +35,7 @@ function Stub({ label, value, dark }: { label: string; value: string; dark?: boo
       className={`-mx-6 mt-8 flex h-[76px] items-center justify-between border-t-2 border-dashed px-6 text-xs font-bold uppercase tracking-[0.08em] sm:-mx-8 sm:px-8 ${
         dark
           ? "border-white/30 text-white/75"
-          : "border-[var(--color-brand-border)] text-[var(--color-brand-muted)]"
+          : "border-[var(--color-brand-primary)]/30 text-[var(--color-brand-muted)]"
       }`}
     >
       <span>{label}</span>
@@ -122,7 +122,12 @@ export function AudienceCards() {
           <div className="md:hidden">
             <Stop>För företag</Stop>
           </div>
-          <article className={`${ticketBase} flex-1 bg-[var(--color-brand-secondary)]`}>
+          <article className={`${ticketBase} isolate flex-1 bg-[var(--color-brand-primary)]`}>
+            {/* Ljus insida – den gröna biljetten bakom syns som en kant. */}
+            <div
+              aria-hidden="true"
+              className="ticket-inner absolute inset-[2px] -z-10 rounded-[22px] bg-[var(--color-brand-secondary)]"
+            />
             <h2 className="text-[1.75rem] font-extrabold leading-[1.08] tracking-tight text-balance sm:text-[2.1rem]">
               Gör resenärerna till{" "}
               <span className="text-[var(--color-brand-primary)]">era stamkunder.</span>
