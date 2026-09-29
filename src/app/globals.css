@@ -71,3 +71,43 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* --- Startsidan: biljetter och busslinje --- */
+
+/* Halvcirkulära hack i biljettens kanter, i höjd med den streckade
+   avrivningslinjen (stubben är 76px hög). */
+.ticket {
+  --notch: 14px;
+  --stub: 76px;
+  -webkit-mask:
+    radial-gradient(circle var(--notch) at 0 calc(100% - var(--stub)), transparent 98%, #000),
+    radial-gradient(circle var(--notch) at 100% calc(100% - var(--stub)), transparent 98%, #000);
+  -webkit-mask-composite: source-in;
+  mask:
+    radial-gradient(circle var(--notch) at 0 calc(100% - var(--stub)), transparent 98%, #000),
+    radial-gradient(circle var(--notch) at 100% calc(100% - var(--stub)), transparent 98%, #000);
+  mask-composite: intersect;
+}
+
+/* Bussen åker fram och tillbaka mellan hållplatserna, stannar en stund vid
+   varje och vänder sig åt rätt håll. */
+.bus-ride {
+  animation: bus-ride 12s ease-in-out infinite;
+}
+.bus-face {
+  animation: bus-face 12s step-end infinite;
+}
+@keyframes bus-ride {
+  0%, 8% { left: 0%; }
+  42%, 58% { left: 100%; }
+  92%, 100% { left: 0%; }
+}
+@keyframes bus-face {
+  0% { transform: scaleX(1); }
+  50% { transform: scaleX(-1); }
+  100% { transform: scaleX(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bus-ride, .bus-face { animation: none; }
+  .bus-ride { left: 50%; }
+}

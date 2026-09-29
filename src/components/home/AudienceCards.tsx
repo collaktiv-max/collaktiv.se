@@ -1,125 +1,166 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import Link from "next/link";
-import { ArrowRight, Bus, MapPin, Store } from "lucide-react";
+import { ArrowRight, MapPin } from "lucide-react";
 import { RegionModal } from "./RegionModal";
+import { Bus } from "./Bus";
 import { PILOT_REGION, PORTAL_URL, WAITLIST_URL } from "@/lib/config";
 
-// Hela rutan är klickbar: huvudknappen sträcks ut över rutan med ett
-// osynligt ::after-lager, och eventuella andra knappar ligger ovanpå (z-10).
-const stretched = "after:absolute after:inset-0 after:rounded-3xl after:content-['']";
+// Hela biljetten är klickbar: huvudknappen sträcks ut över rutan med ett
+// osynligt ::after-lager, och regionknappen ligger ovanpå (z-10).
+const stretched = "after:absolute after:inset-0 after:content-['']";
 
-const cardBase =
-  "group relative flex flex-col rounded-3xl border p-7 text-left transition duration-200 hover:-translate-y-1 hover:shadow-xl sm:p-9 focus-within:ring-4 focus-within:ring-[var(--color-brand-primary)]/25";
+const ticketBase =
+  "ticket group relative flex min-w-0 flex-col rounded-3xl px-6 pt-8 transition duration-200 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:px-8 sm:pt-10";
 
 const ctaBase =
-  "mt-8 inline-flex items-center gap-2 self-start rounded-full px-6 py-3.5 text-[15px] font-bold transition outline-none";
+  "mt-7 inline-flex items-center gap-2.5 self-start rounded-full px-6 py-3.5 text-[15px] font-bold transition outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-brand-accent)]";
+
+const arrow = <ArrowRight className="h-4.5 w-4.5 transition group-hover:translate-x-1" />;
+
+// Hållplatsskylt: talar om vem biljetten är till.
+function Stop({ children }: { children: ReactNode }) {
+  return (
+    <span className="relative inline-flex items-center gap-2 rounded-full border-2 border-[var(--color-brand-primary)] bg-white py-1 pl-1.5 pr-3.5 text-[13px] font-extrabold md:text-xs uppercase tracking-[0.08em] text-[var(--color-brand-primary)]">
+      <span className="h-4 w-4 rounded-full bg-[var(--color-brand-primary)] shadow-[inset_0_0_0_4px_white]" />
+      {children}
+    </span>
+  );
+}
+
+function Stub({ label, value, dark }: { label: string; value: string; dark?: boolean }) {
+  return (
+    <div
+      className={`-mx-6 mt-8 flex h-[76px] items-center justify-between border-t-2 border-dashed px-6 text-xs font-bold uppercase tracking-[0.08em] sm:-mx-8 sm:px-8 ${
+        dark
+          ? "border-white/30 text-white/75"
+          : "border-[var(--color-brand-border)] text-[var(--color-brand-muted)]"
+      }`}
+    >
+      <span>{label}</span>
+      <b
+        className={`font-extrabold ${dark ? "text-[var(--color-brand-accent)]" : "text-[var(--color-brand-primary)]"}`}
+      >
+        {value}
+      </b>
+    </div>
+  );
+}
 
 export function AudienceCards() {
   const [modal, setModal] = useState<null | "pilot" | "other">(null);
 
+  const riderCta = `${ctaBase} ${stretched} bg-white text-[var(--color-brand-primary)] group-hover:bg-[var(--color-brand-mint)]`;
+  const bizCta = `${ctaBase} ${stretched} bg-[var(--color-brand-primary)] text-white group-hover:bg-[var(--color-brand-primary-hover)]`;
+
   return (
-    <div className="grid gap-5 md:grid-cols-2 md:gap-6">
-      {/* Resenärer */}
-      <article
-        className={`${cardBase} border-[var(--color-brand-primary)] bg-[var(--color-brand-primary)] text-white shadow-lg shadow-[var(--color-brand-primary)]/20`}
-      >
-        <span className="inline-flex items-center gap-2 self-start rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-wide">
-          <Bus className="h-4 w-4" />
-          För resenärer
-        </span>
-        <h2 className="mt-5 text-[1.75rem] font-extrabold leading-[1.1] tracking-tight sm:text-[2rem]">
-          Åk kollektivt.{" "}
-          <span className="text-[var(--color-brand-accent)]">Bli belönad.</span>
-        </h2>
-        <p className="mt-4 text-[15.5px] font-medium leading-relaxed text-white/85">
-          Varje resa med bussen eller tåget ger dig rabatter hos lokala
-          favoriter. Skriv upp dig på väntelistan och var först in när vi
-          startar i {PILOT_REGION}.
-        </p>
+    <>
+      {/* Busslinjen mellan hållplatserna (dator). Linjen och bussen går
+          mellan hållplatsernas mittpunkter, dvs. mitten av varje kolumn. */}
+      <div className="relative hidden h-16 grid-cols-2 gap-6 md:grid" aria-hidden="true">
+        <div className="absolute inset-x-[25%] bottom-[15px] h-1 bg-[repeating-linear-gradient(90deg,var(--color-brand-primary)_0_14px,transparent_14px_22px)] opacity-35" />
+        {/* Bussen håller sig mellan skyltarna så att den aldrig kör över dem. */}
+        <div className="absolute inset-x-[calc(25%+128px)] bottom-[17px] h-8">
+          <div className="bus-ride absolute bottom-0 left-0 -translate-x-1/2">
+            <div className="bus-face">
+              <Bus className="h-8 w-16 drop-shadow-sm" />
+            </div>
+          </div>
+        </div>
+        <div className="flex items-end justify-center">
+          <Stop>För resenärer</Stop>
+        </div>
+        <div className="flex items-end justify-center">
+          <Stop>För företag</Stop>
+        </div>
+      </div>
 
-        {WAITLIST_URL ? (
-          <a
-            href={WAITLIST_URL}
-            className={`${ctaBase} ${stretched} bg-white text-[var(--color-brand-primary)] group-hover:bg-[var(--color-brand-mint)]`}
-          >
-            Gå med i väntelistan
-            <ArrowRight className="h-4.5 w-4.5 transition group-hover:translate-x-1" />
-          </a>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setModal("pilot")}
-            className={`${ctaBase} ${stretched} bg-white text-[var(--color-brand-primary)] group-hover:bg-[var(--color-brand-mint)]`}
-          >
-            Gå med i väntelistan
-            <ArrowRight className="h-4.5 w-4.5 transition group-hover:translate-x-1" />
-          </button>
-        )}
+      <div className="grid gap-9 md:mt-4 md:grid-cols-2 md:gap-6">
+        {/* Resenärer */}
+        <div className="flex min-w-0 flex-col gap-3 md:gap-0">
+          <div className="md:hidden">
+            <Stop>För resenärer</Stop>
+          </div>
+          <article className={`${ticketBase} flex-1 bg-[var(--color-brand-primary)] text-white`}>
+            <h2 className="text-[1.75rem] font-extrabold leading-[1.08] tracking-tight text-balance sm:text-[2.1rem]">
+              Varje resa <span className="text-[var(--color-brand-accent)]">ger rabatt.</span>
+            </h2>
+            <p className="mt-3 max-w-[34ch] text-[15.5px] font-semibold text-white/85">
+              Hos lokala favoriter när du väljer bussen.
+            </p>
 
-        <button
-          type="button"
-          onClick={() => setModal("other")}
-          className="relative z-10 mt-4 inline-flex items-center gap-2 self-start rounded-full px-1 py-1 text-left text-sm font-bold text-white/90 underline decoration-white/40 underline-offset-4 transition hover:text-white hover:decoration-white"
-        >
-          <MapPin className="h-4 w-4" />
-          Bor du i en annan region? Välj region
-        </button>
-      </article>
+            {WAITLIST_URL ? (
+              <a href={WAITLIST_URL} className={riderCta}>
+                Gå med i väntelistan
+                {arrow}
+              </a>
+            ) : (
+              <button type="button" onClick={() => setModal("pilot")} className={riderCta}>
+                Gå med i väntelistan
+                {arrow}
+              </button>
+            )}
 
-      {/* Företag */}
-      <article
-        className={`${cardBase} border-[var(--color-brand-border)] bg-[var(--color-brand-secondary)]`}
-      >
-        <span className="inline-flex items-center gap-2 self-start rounded-full bg-[var(--color-brand-primary)]/10 px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-wide text-[var(--color-brand-primary)]">
-          <Store className="h-4 w-4" />
-          För företag
-        </span>
-        <h2 className="mt-5 text-[1.75rem] font-extrabold leading-[1.1] tracking-tight sm:text-[2rem]">
-          Gör stadens resenärer till{" "}
-          <span className="text-[var(--color-brand-primary)]">era stamkunder.</span>
-        </h2>
-        <p className="mt-4 text-[15.5px] font-medium leading-relaxed text-[var(--color-brand-muted)]">
-          Synas för tusentals resenärer som redan rör sig nära er – utan
-          annonsbudget. Lägg upp erbjudanden på några minuter och se exakt
-          vad de ger.
-        </p>
+            <button
+              type="button"
+              onClick={() => setModal("other")}
+              className="relative z-10 mt-3.5 inline-flex items-center gap-1.5 self-start py-1 text-left text-[13.5px] font-bold text-white/90 underline decoration-white/40 underline-offset-4 transition hover:text-white hover:decoration-white"
+            >
+              <MapPin className="h-4 w-4" />
+              Bor du i en annan region?
+            </button>
 
-        {PORTAL_URL ? (
-          <a
-            href={PORTAL_URL}
-            className={`${ctaBase} ${stretched} bg-[var(--color-brand-primary)] text-white group-hover:bg-[var(--color-brand-primary-hover)]`}
-          >
-            Till företagsportalen
-            <ArrowRight className="h-4.5 w-4.5 transition group-hover:translate-x-1" />
-          </a>
-        ) : (
-          <Link
-            href="/kontakt"
-            className={`${ctaBase} ${stretched} bg-[var(--color-brand-primary)] text-white group-hover:bg-[var(--color-brand-primary-hover)]`}
-          >
-            Bli partner – kontakta oss
-            <ArrowRight className="h-4.5 w-4.5 transition group-hover:translate-x-1" />
-          </Link>
-        )}
-      </article>
+            <div className="mt-auto">
+              <Stub label="Start" value={PILOT_REGION} dark />
+            </div>
+          </article>
+        </div>
+
+        {/* Företag */}
+        <div className="flex min-w-0 flex-col gap-3 md:gap-0">
+          <div className="md:hidden">
+            <Stop>För företag</Stop>
+          </div>
+          <article className={`${ticketBase} flex-1 bg-[var(--color-brand-secondary)]`}>
+            <h2 className="text-[1.75rem] font-extrabold leading-[1.08] tracking-tight text-balance sm:text-[2.1rem]">
+              Gör resenärerna till{" "}
+              <span className="text-[var(--color-brand-primary)]">era stamkunder.</span>
+            </h2>
+            <p className="mt-3 max-w-[34ch] text-[15.5px] font-semibold text-[var(--color-brand-muted)]">
+              Nå tusentals lokala resenärer, utan annonsbudget.
+            </p>
+
+            {PORTAL_URL ? (
+              <a href={PORTAL_URL} className={bizCta}>
+                Till företagsportalen
+                {arrow}
+              </a>
+            ) : (
+              <Link href="/kontakt" className={bizCta}>
+                Bli partner
+                {arrow}
+              </Link>
+            )}
+
+            <div className="mt-auto">
+              <Stub label="Kom igång" value="Gratis" />
+            </div>
+          </article>
+        </div>
+      </div>
 
       <RegionModal
         open={modal !== null}
         onClose={() => setModal(null)}
         initialRegion={modal === "pilot" ? PILOT_REGION : ""}
-        title={
-          modal === "pilot"
-            ? "Skriv upp dig på väntelistan"
-            : "Vi kommer till fler regioner"
-        }
+        title={modal === "pilot" ? "Gå med i väntelistan" : "Vi kommer till fler regioner"}
         intro={
           modal === "pilot"
-            ? `Lämna din e-post så hör vi av oss när Collaktiv startar i ${PILOT_REGION}.`
-            : `Vi startar i ${PILOT_REGION}. Välj din region så meddelar vi dig när Collaktiv kommer dit – ju fler som anmäler sig, desto snabbare kommer vi.`
+            ? `Vi mejlar dig när Collaktiv startar i ${PILOT_REGION}.`
+            : "Välj din region så mejlar vi när vi kommer dit."
         }
       />
-    </div>
+    </>
   );
 }
