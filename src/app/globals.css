@@ -165,3 +165,33 @@ body {
     radial-gradient(circle var(--inner-notch) at calc(100% + var(--edge)) var(--inner-y), transparent 98%, #000);
   mask-composite: intersect;
 }
+
+/* Mobil: liggande biljett. Hacken sitter upptill och nedtill, i höjd med
+   den streckade linjen före stubben (92px bred). */
+.ticket-h {
+  --notch: 11px;
+  --stub: 92px;
+  -webkit-mask:
+    radial-gradient(circle var(--notch) at calc(100% - var(--stub)) 0, transparent 98%, #000),
+    radial-gradient(circle var(--notch) at calc(100% - var(--stub)) 100%, transparent 98%, #000);
+  -webkit-mask-composite: source-in;
+  mask:
+    radial-gradient(circle var(--notch) at calc(100% - var(--stub)) 0, transparent 98%, #000),
+    radial-gradient(circle var(--notch) at calc(100% - var(--stub)) 100%, transparent 98%, #000);
+  mask-composite: intersect;
+}
+/* Ljus insida 2px in, med 2px större hack, så att den gröna kanten följer
+   även hacken (samma teknik som .ticket-inner). */
+.ticket-h-inner {
+  --edge: 2px;
+  --inner-notch: calc(var(--notch) + var(--edge));
+  --inner-x: calc(100% - var(--stub) + var(--edge));
+  -webkit-mask:
+    radial-gradient(circle var(--inner-notch) at var(--inner-x) calc(0px - var(--edge)), transparent 98%, #000),
+    radial-gradient(circle var(--inner-notch) at var(--inner-x) calc(100% + var(--edge)), transparent 98%, #000);
+  -webkit-mask-composite: source-in;
+  mask:
+    radial-gradient(circle var(--inner-notch) at var(--inner-x) calc(0px - var(--edge)), transparent 98%, #000),
+    radial-gradient(circle var(--inner-notch) at var(--inner-x) calc(100% + var(--edge)), transparent 98%, #000);
+  mask-composite: intersect;
+}

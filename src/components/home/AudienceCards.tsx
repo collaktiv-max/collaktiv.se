@@ -69,6 +69,34 @@ function Stop({ children, pole }: { children: ReactNode; pole?: "left" | "right"
   );
 }
 
+// Mobil: liten etikett överst i biljetten som talar om vem den är till.
+function MobileWho({ children, dark }: { children: ReactNode; dark?: boolean }) {
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 self-start rounded-full py-1 pl-1 pr-2.5 text-[11px] font-extrabold uppercase tracking-[0.08em] ${
+        dark ? "bg-white/15" : "bg-[var(--color-brand-primary)]/10 text-[var(--color-brand-primary)]"
+      }`}
+    >
+      <span
+        className={`h-[13px] w-[13px] rounded-full ${
+          dark
+            ? "bg-[var(--color-brand-accent)] shadow-[inset_0_0_0_3.5px_var(--color-brand-primary)]"
+            : "bg-[var(--color-brand-primary)] shadow-[inset_0_0_0_3.5px_var(--color-brand-secondary)]"
+        }`}
+      />
+      {children}
+    </span>
+  );
+}
+
+// Mobil: stubben till höger är biljettens knapp. Dess osynliga ::after
+// täcker hela biljetten, så att man kan trycka var som helst på den.
+const mobileStub =
+  "group flex flex-col items-center justify-center gap-2 border-l-2 border-dashed px-1.5 py-3 text-center text-[10.5px] font-extrabold uppercase tracking-[0.07em] outline-none after:absolute after:inset-0 after:rounded-[20px] after:content-[''] focus-visible:after:ring-4 focus-visible:after:ring-[var(--color-brand-accent)]";
+const mobileGo =
+  "grid h-[46px] w-[46px] place-items-center rounded-full transition-transform group-hover:translate-x-0.5";
+const mobileArrow = <ArrowRight className="h-[22px] w-[22px]" strokeWidth={2.6} />;
+
 function Stub({ label, value, dark }: { label: string; value: string; dark?: boolean }) {
   return (
     <div
@@ -120,12 +148,83 @@ export function AudienceCards() {
         </div>
       </div>
 
-      <div className="grid gap-9 md:mt-4 md:grid-cols-2 md:gap-6">
-        {/* Resenärer */}
-        <div className="flex min-w-0 flex-col gap-3 md:gap-0">
-          <div className="md:hidden">
-            <Stop>För resenärer</Stop>
+      {/* Mobil: två liggande biljetter som båda får plats på första skärmen. */}
+      <div className="grid gap-3.5 md:hidden">
+        <article className="ticket-h relative grid min-h-[168px] grid-cols-[1fr_92px] rounded-[20px] bg-[var(--color-brand-primary)] text-white active:scale-[0.985] motion-reduce:active:scale-100 transition-transform">
+          <div className="flex min-w-0 flex-col py-4 pl-[18px] pr-3.5">
+            <MobileWho dark>För resenärer</MobileWho>
+            <h2 className="mt-2.5 text-[21px] font-extrabold leading-[1.1] tracking-tight text-balance">
+              Åk kollektivt, <span className="text-[var(--color-brand-accent)]">bli belönad!</span>
+            </h2>
+            <p className="mt-1.5 text-[13px] font-semibold leading-snug text-white/85">
+              Samla resepoäng och växla dem mot erbjudanden hos lokala företag.
+            </p>
+            <button
+              type="button"
+              onClick={() => setModal("other")}
+              className="relative z-10 mt-2.5 inline-flex items-center gap-1.5 self-start text-left text-xs font-bold text-white/90 underline decoration-white/40 underline-offset-[3px]"
+            >
+              <MapPin className="h-3.5 w-3.5" />
+              Annan region?
+            </button>
           </div>
+          {WAITLIST_URL ? (
+            <a href={WAITLIST_URL} className={`${mobileStub} border-white/30 text-white`}>
+              <span className={`${mobileGo} bg-white text-[var(--color-brand-primary)]`}>{mobileArrow}</span>
+              Väntelista
+            </a>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setModal("pilot")}
+              className={`${mobileStub} border-white/30 text-white`}
+            >
+              <span className={`${mobileGo} bg-white text-[var(--color-brand-primary)]`}>{mobileArrow}</span>
+              Väntelista
+            </button>
+          )}
+        </article>
+
+        <article className="ticket-h relative isolate grid min-h-[168px] grid-cols-[1fr_92px] rounded-[20px] bg-[var(--color-brand-primary)] active:scale-[0.985] motion-reduce:active:scale-100 transition-transform">
+          {/* Ljus insida – den gröna biljetten bakom syns som en kant. */}
+          <div
+            aria-hidden="true"
+            className="ticket-h-inner absolute inset-[2px] -z-10 rounded-[18px] bg-[var(--color-brand-secondary)]"
+          />
+          <div className="flex min-w-0 flex-col py-4 pl-[18px] pr-3.5">
+            <MobileWho>För företag</MobileWho>
+            <h2 className="mt-2.5 text-[21px] font-extrabold leading-[1.1] tracking-tight text-balance">
+              Gör resenärer till era{" "}
+              <span className="text-[var(--color-brand-primary)]">nya stamkunder</span>
+            </h2>
+            <p className="mt-1.5 text-[13px] font-semibold leading-snug text-[var(--color-brand-muted)]">
+              Lägg upp ett erbjudande och nå tusentals lokala resenärer med tydlig statistik.
+            </p>
+          </div>
+          {PORTAL_URL ? (
+            <a
+              href={PORTAL_URL}
+              className={`${mobileStub} border-[var(--color-brand-primary)]/30 text-[var(--color-brand-primary)]`}
+            >
+              <span className={`${mobileGo} bg-[var(--color-brand-primary)] text-white`}>{mobileArrow}</span>
+              Läs mer
+            </a>
+          ) : (
+            <Link
+              href="/kontakt"
+              className={`${mobileStub} border-[var(--color-brand-primary)]/30 text-[var(--color-brand-primary)]`}
+            >
+              <span className={`${mobileGo} bg-[var(--color-brand-primary)] text-white`}>{mobileArrow}</span>
+              Läs mer
+            </Link>
+          )}
+        </article>
+      </div>
+
+      {/* Dator och surfplatta */}
+      <div className="hidden md:mt-4 md:grid md:grid-cols-2 md:gap-6">
+        {/* Resenärer */}
+        <div className="flex min-w-0 flex-col">
           <article className={`${ticketBase} flex-1 bg-[var(--color-brand-primary)] text-white`}>
             <h2 className="text-[1.75rem] font-extrabold leading-[1.08] tracking-tight text-balance sm:text-[2.1rem]">
               Åk kollektivt, <span className="text-[var(--color-brand-accent)]">bli belönad!</span>
@@ -163,10 +262,7 @@ export function AudienceCards() {
         </div>
 
         {/* Företag */}
-        <div className="flex min-w-0 flex-col gap-3 md:gap-0">
-          <div className="md:hidden">
-            <Stop>För företag</Stop>
-          </div>
+        <div className="flex min-w-0 flex-col">
           <article className={`${ticketBase} isolate flex-1 bg-[var(--color-brand-primary)]`}>
             {/* Ljus insida – den gröna biljetten bakom syns som en kant. */}
             <div
