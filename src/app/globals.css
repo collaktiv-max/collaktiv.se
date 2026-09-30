@@ -89,13 +89,28 @@ body {
   mask-composite: intersect;
 }
 
-/* Bussen åker fram och tillbaka mellan hållplatserna, stannar en stund vid
-   varje och vänder sig åt rätt håll. */
+/* Bussen åker fram och tillbaka mellan hållplatserna och stannar en stund
+   vid varje. Alla delar går på samma 12-sekunderscykel:
+   0–8 % står vid vänster hållplats, 8–42 % kör åt höger,
+   42–58 % står vid höger hållplats (vänder vid 50 %), 58–92 % kör åt vänster.
+   .bus-face vänder bussen, så lutning och hjul räknas alltid "framåt". */
 .bus-ride {
   animation: bus-ride 12s ease-in-out infinite;
 }
 .bus-face {
   animation: bus-face 12s step-end infinite;
+}
+.bus-tilt {
+  transform-origin: 50% 100%;
+  animation: bus-tilt 12s ease-in-out infinite;
+}
+.bus-bob {
+  animation: bus-bob 0.45s ease-in-out infinite alternate;
+}
+.bus-wheel {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bus-wheel 12s ease-in-out infinite;
 }
 @keyframes bus-ride {
   0%, 8% { left: 0%; }
@@ -107,8 +122,31 @@ body {
   50% { transform: scaleX(-1); }
   100% { transform: scaleX(1); }
 }
+/* Nosen lyfter lite när bussen startar och dyker lite när den bromsar. */
+@keyframes bus-tilt {
+  0%, 8% { transform: rotate(0deg); }
+  12% { transform: rotate(-3deg); }
+  18%, 36% { transform: rotate(0deg); }
+  41% { transform: rotate(2.5deg); }
+  45%, 58% { transform: rotate(0deg); }
+  62% { transform: rotate(-3deg); }
+  68%, 86% { transform: rotate(0deg); }
+  91% { transform: rotate(2.5deg); }
+  95%, 100% { transform: rotate(0deg); }
+}
+/* Lätt gungning, som en buss med motorn igång. */
+@keyframes bus-bob {
+  from { transform: translateY(0); }
+  to { transform: translateY(-1px); }
+}
+/* Hjulen följer samma fart som bussen och står still vid hållplatserna. */
+@keyframes bus-wheel {
+  0%, 8% { transform: rotate(0deg); }
+  42%, 58% { transform: rotate(2880deg); }
+  92%, 100% { transform: rotate(5760deg); }
+}
 @media (prefers-reduced-motion: reduce) {
-  .bus-ride, .bus-face { animation: none; }
+  .bus-ride, .bus-face, .bus-tilt, .bus-bob, .bus-wheel { animation: none; }
   .bus-ride { left: 50%; }
 }
 

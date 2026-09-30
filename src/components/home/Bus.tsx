@@ -17,11 +17,14 @@ export function Bus({ className = "" }: { className?: string }) {
       <rect x="1" y="18" width="60" height="2.5" fill="var(--color-brand-accent)" />
       {/* Strålkastare */}
       <rect x="58" y="20" width="3" height="3" rx="1" fill="#fff6c9" />
-      {/* Hjul */}
-      <circle cx="15" cy="25" r="5" fill="var(--color-brand-ink)" />
-      <circle cx="15" cy="25" r="2" fill="#ffffff" />
-      <circle cx="47" cy="25" r="5" fill="var(--color-brand-ink)" />
-      <circle cx="47" cy="25" r="2" fill="#ffffff" />
+      {/* Hjul – snurrar i takt med farten (se .bus-wheel i globals.css) */}
+      {[15, 47].map((cx) => (
+        <g key={cx} className="bus-wheel">
+          <circle cx={cx} cy="25" r="5" fill="var(--color-brand-ink)" />
+          <circle cx={cx} cy="25" r="2.4" fill="#ffffff" />
+          <rect x={cx - 0.6} y="20.6" width="1.2" height="2.4" rx="0.6" fill="#ffffff" />
+        </g>
+      ))}
     </svg>
   );
 }

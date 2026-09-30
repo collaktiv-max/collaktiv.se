@@ -19,41 +19,40 @@ const ctaBase =
 
 const arrow = <ArrowRight className="h-4.5 w-4.5 transition group-hover:translate-x-1" />;
 
-// Liten hållplatsstolpe med en skylt där en grön pil pekar snett ned mot
+// Hållplatsstolpe med en skylt där en grön pil pekar rakt ned mot
 // biljetten. Ligger absolut ovanpå skylten, så den påverkar inte layouten.
 function BusStopPole({ side }: { side: "left" | "right" }) {
   return (
     <svg
-      viewBox="0 0 20 38"
+      viewBox="0 0 28 54"
       aria-hidden="true"
-      className={`pointer-events-none absolute bottom-full mb-[-2px] h-[38px] w-5 ${
-        side === "left" ? "left-3" : "right-3"
+      className={`pointer-events-none absolute bottom-full mb-[-2px] h-[54px] w-7 ${
+        side === "left" ? "left-2.5" : "right-2.5"
       }`}
     >
       {/* Stolpe */}
-      <rect x="9" y="18" width="2" height="20" rx="1" fill="var(--color-brand-muted)" />
+      <rect x="12.75" y="24" width="2.5" height="30" rx="1.25" fill="var(--color-brand-muted)" />
       {/* Skylt */}
       <rect
-        x="1"
-        y="1"
-        width="18"
-        height="18"
-        rx="4"
+        x="1.25"
+        y="1.25"
+        width="25.5"
+        height="25.5"
+        rx="5.5"
         fill="white"
         stroke="var(--color-brand-primary)"
-        strokeWidth="2"
+        strokeWidth="2.5"
       />
-      {/* Pil snett nedåt, in mot biljettens mitt */}
+      {/* Pil rakt ned */}
       <g
-        transform={side === "left" ? undefined : "translate(20 0) scale(-1 1)"}
         fill="none"
         stroke="#1b9444"
-        strokeWidth="2.4"
+        strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <path d="M6 6l8 8" />
-        <path d="M8 14h6V8" />
+        <path d="M14 7.5v12.5" />
+        <path d="M8.5 14.5L14 20l5.5-5.5" />
       </g>
     </svg>
   );
@@ -105,7 +104,11 @@ export function AudienceCards() {
         <div className="absolute inset-x-[calc(25%+128px)] bottom-[17px] h-8">
           <div className="bus-ride absolute bottom-0 left-0 -translate-x-1/2">
             <div className="bus-face">
-              <Bus className="h-8 w-16 drop-shadow-sm" />
+              <div className="bus-tilt">
+                <div className="bus-bob">
+                  <Bus className="h-8 w-16 drop-shadow-sm" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
