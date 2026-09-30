@@ -130,21 +130,22 @@ export function AudienceCards() {
               className="ticket-inner absolute inset-[2px] -z-10 rounded-[22px] bg-[var(--color-brand-secondary)]"
             />
             <h2 className="text-[1.75rem] font-extrabold leading-[1.08] tracking-tight text-balance sm:text-[2.1rem]">
-              Gör resenärerna till{" "}
-              <span className="text-[var(--color-brand-primary)]">era stamkunder.</span>
+              Gör resenärer till era{" "}
+              <span className="text-[var(--color-brand-primary)]">nya stamkunder</span>
             </h2>
             <p className="mt-3 max-w-[34ch] text-[15.5px] font-semibold text-[var(--color-brand-muted)]">
-              Nå tusentals lokala resenärer, utan annonsbudget.
+              Nå tusentals lokala resenärer! Lägg upp ett erbjudande, få nya
+              kunder in i butiken, med ständig synlighet och tydlig statistik.
             </p>
 
             {PORTAL_URL ? (
               <a href={PORTAL_URL} className={bizCta}>
-                Till företagsportalen
+                Läs mer
                 {arrow}
               </a>
             ) : (
               <Link href="/kontakt" className={bizCta}>
-                Bli partner
+                Läs mer
                 {arrow}
               </Link>
             )}
