@@ -19,12 +19,53 @@ const ctaBase =
 
 const arrow = <ArrowRight className="h-4.5 w-4.5 transition group-hover:translate-x-1" />;
 
+// Liten hållplatsstolpe med en skylt där en grön pil pekar snett ned mot
+// biljetten. Ligger absolut ovanpå skylten, så den påverkar inte layouten.
+function BusStopPole({ side }: { side: "left" | "right" }) {
+  return (
+    <svg
+      viewBox="0 0 20 38"
+      aria-hidden="true"
+      className={`pointer-events-none absolute bottom-full mb-[-2px] h-[38px] w-5 ${
+        side === "left" ? "left-3" : "right-3"
+      }`}
+    >
+      {/* Stolpe */}
+      <rect x="9" y="18" width="2" height="20" rx="1" fill="var(--color-brand-muted)" />
+      {/* Skylt */}
+      <rect
+        x="1"
+        y="1"
+        width="18"
+        height="18"
+        rx="4"
+        fill="white"
+        stroke="var(--color-brand-primary)"
+        strokeWidth="2"
+      />
+      {/* Pil snett nedåt, in mot biljettens mitt */}
+      <g
+        transform={side === "left" ? undefined : "translate(20 0) scale(-1 1)"}
+        fill="none"
+        stroke="#1b9444"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M6 6l8 8" />
+        <path d="M8 14h6V8" />
+      </g>
+    </svg>
+  );
+}
+
 // Hållplatsskylt: talar om vem biljetten är till.
-function Stop({ children }: { children: ReactNode }) {
+function Stop({ children, pole }: { children: ReactNode; pole?: "left" | "right" }) {
   return (
     <span className="relative inline-flex items-center gap-2 rounded-full border-2 border-[var(--color-brand-primary)] bg-white py-1 pl-1.5 pr-3.5 text-[13px] font-extrabold md:text-xs uppercase tracking-[0.08em] text-[var(--color-brand-primary)]">
       <span className="h-4 w-4 rounded-full bg-[var(--color-brand-primary)] shadow-[inset_0_0_0_4px_white]" />
       {children}
+      {pole && <BusStopPole side={pole} />}
     </span>
   );
 }
@@ -69,10 +110,10 @@ export function AudienceCards() {
           </div>
         </div>
         <div className="flex items-end justify-center">
-          <Stop>För resenärer</Stop>
+          <Stop pole="left">För resenärer</Stop>
         </div>
         <div className="flex items-end justify-center">
-          <Stop>För företag</Stop>
+          <Stop pole="right">För företag</Stop>
         </div>
       </div>
 
