@@ -2,6 +2,13 @@ import { Header } from "@/components/home/Header";
 import { Footer } from "@/components/home/Footer";
 import { AudienceCards } from "@/components/home/AudienceCards";
 import { Container } from "@/components/ui/Container";
+import { HowItWorks } from "@/components/home/sections/HowItWorks";
+import { WhyCollaktiv } from "@/components/home/sections/WhyCollaktiv";
+import { AppFeatures } from "@/components/home/sections/AppFeatures";
+import { Impact } from "@/components/home/sections/Impact";
+import { About } from "@/components/home/sections/About";
+import { ForBusinesses } from "@/components/home/sections/ForBusinesses";
+import { FinalCta } from "@/components/home/sections/FinalCta";
 
 export default function Home() {
   return (
@@ -26,6 +33,14 @@ export default function Home() {
             </div>
           </Container>
         </section>
+
+        <HowItWorks />
+        <WhyCollaktiv />
+        <AppFeatures />
+        <Impact />
+        <About />
+        <ForBusinesses />
+        <FinalCta />
       </main>
       <Footer />
     </>

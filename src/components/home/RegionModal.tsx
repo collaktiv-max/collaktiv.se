@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { Check, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { REGIONS } from "@/lib/regions";
@@ -25,6 +25,9 @@ export function RegionModal({
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
   const dialogRef = useRef<HTMLDialogElement>(null);
+  // Flera regionrutor kan finnas på samma sida, så id:n måste vara unika.
+  const uid = useId();
+  const ids = { title: `${uid}-title`, region: `${uid}-region`, email: `${uid}-email` };
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -68,7 +71,7 @@ export function RegionModal({
         // Klick på bakgrunden (utanför rutan) stänger.
         if (e.target === dialogRef.current) onClose();
       }}
-      aria-labelledby="region-modal-title"
+      aria-labelledby={ids.title}
       className="m-auto w-[calc(100%-2.5rem)] max-w-md rounded-3xl bg-white p-0 text-[var(--color-brand-ink)] shadow-2xl backdrop:bg-[var(--color-brand-ink)]/50 backdrop:backdrop-blur-sm"
     >
       <div className="relative p-6 sm:p-8">
@@ -96,18 +99,18 @@ export function RegionModal({
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
-            <h2 id="region-modal-title" className="pr-8 text-xl font-extrabold leading-tight">
+            <h2 id={ids.title} className="pr-8 text-xl font-extrabold leading-tight">
               {title}
             </h2>
             <p className="mt-2 text-[15px] font-medium leading-relaxed text-[var(--color-brand-muted)]">
               {intro}
             </p>
 
-            <label className="mt-6 block text-sm font-bold" htmlFor="region">
+            <label className="mt-6 block text-sm font-bold" htmlFor={ids.region}>
               Din region
             </label>
             <select
-              id="region"
+              id={ids.region}
               required
               value={region}
               onChange={(e) => setRegion(e.target.value)}
@@ -123,11 +126,11 @@ export function RegionModal({
               ))}
             </select>
 
-            <label className="mt-4 block text-sm font-bold" htmlFor="email">
+            <label className="mt-4 block text-sm font-bold" htmlFor={ids.email}>
               E-postadress
             </label>
             <input
-              id="email"
+              id={ids.email}
               type="email"
               required
               autoComplete="email"
