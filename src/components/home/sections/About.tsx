@@ -5,7 +5,7 @@ import { Reveal } from "../Reveal";
 import { Eyebrow, SectionTitle } from "./shared";
 
 // Lägg en bild på Colle i public/ och sätt sökvägen här, t.ex. "/colle.png".
-const COLLE_IMAGE: string | null = "/colle.png";
+const COLLE_IMAGE: string | null = null;
 
 const parts: { icon: LucideIcon; title: string; text: string }[] = [
   {
