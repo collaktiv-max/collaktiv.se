@@ -105,7 +105,7 @@ export function Impact() {
 
         {/* Collaktiv UF – piloten, siffror och utmärkelser i ett kort */}
         <Reveal className="mt-4 lg:mt-5" delay={100}>
-          <div className="grid gap-6 rounded-[1.75rem] bg-[var(--color-brand-ink)] p-6 sm:p-8 lg:grid-cols-[1.1fr_1fr] lg:gap-10">
+          <div className="grid gap-6 rounded-[1.75rem] bg-[var(--color-brand-ink)] p-6 sm:p-8 lg:grid-cols-2 lg:gap-8">
             <div>
               <span className="text-xs font-extrabold uppercase tracking-[0.1em] text-[var(--color-brand-accent)]">
                 Collaktiv UF · Piloten i Gävle
@@ -127,22 +127,21 @@ export function Impact() {
               </ul>
             </div>
 
-            <dl className="grid grid-cols-2 content-start gap-2.5">
+            {/* Rutorna fyller hela höjden bredvid texten (2 × 2 på dator). */}
+            <dl className="grid grid-cols-2 gap-2.5 lg:grid-rows-2 lg:gap-3">
               {stats.map((s) => (
                 <div
                   key={s.label}
-                  className="rounded-2xl bg-white/[0.06] p-4 transition-colors duration-200 hover:bg-white/10"
+                  className="flex flex-col justify-center rounded-2xl bg-white/[0.06] p-4 transition-colors duration-200 hover:bg-white/10 lg:p-6"
                 >
-                  <dd className="whitespace-nowrap text-[1.55rem] font-extrabold leading-none tracking-tight text-[var(--color-brand-accent)] tabular-nums sm:text-[1.9rem]">
+                  <dd className="whitespace-nowrap text-[clamp(1.3rem,6.2vw,1.55rem)] font-extrabold leading-none tracking-tight text-[var(--color-brand-accent)] tabular-nums sm:text-[1.9rem] lg:text-[2.2rem]">
                     <CountUp value={s.value} />
                   </dd>
-                  <dt className="mt-1.5 text-[12.5px] font-bold text-white/80">{s.label}</dt>
+                  <dt className="mt-1.5 text-[12.5px] font-bold text-white/80 lg:mt-2 lg:text-sm">
+                    {s.label}
+                  </dt>
                 </div>
               ))}
-              <p className="col-span-2 mt-1 text-[11.5px] font-semibold leading-relaxed text-white/55">
-                Med grunden från prisbelönta Collaktiv UF skalar vi nu upp som Collaktiv AB mot en
-                större regional satsning.
-              </p>
             </dl>
           </div>
         </Reveal>
