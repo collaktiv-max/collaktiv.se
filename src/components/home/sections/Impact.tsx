@@ -44,7 +44,7 @@ export function Impact() {
   return (
     <section id="collaktiv-uf" className="bg-[var(--color-brand-secondary)] py-16 sm:py-24">
       <Container>
-        <div className="grid gap-10 lg:grid-cols-[1fr_1.15fr] lg:items-center lg:gap-14">
+        <div className="grid gap-7 md:gap-10 lg:grid-cols-[1fr_1.15fr] lg:items-center lg:gap-14">
           <Reveal>
             <Eyebrow>Collaktiv UF · Piloten i Gävle</Eyebrow>
             <SectionTitle>
@@ -56,7 +56,7 @@ export function Impact() {
               Uppskattningen och feedbacken var enorm. Nu siktar vi större, fler användare, fler
               företag, i en regionalt satsad lansering av Collaktiv.
             </p>
-            <ul className="mt-6 flex flex-wrap gap-2">
+            <ul className="mt-6 hidden flex-wrap gap-2 md:flex">
               {facts.map(({ icon: Icon, text }) => (
                 <li
                   key={text}
