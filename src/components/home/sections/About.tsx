@@ -5,7 +5,7 @@ import { Reveal } from "../Reveal";
 import { Eyebrow, SectionTitle } from "./shared";
 
 // Lägg en bild på Colle i public/ och sätt sökvägen här, t.ex. "/colle.png".
-const COLLE_IMAGE: string | null = null;
+const COLLE_IMAGE: string | null = "/colle.png";
 
 const parts: { icon: LucideIcon; title: string; text: string }[] = [
   {
@@ -75,14 +75,14 @@ export function About() {
         {/* Möt Colle */}
         <Reveal className="mt-8">
           <div className="grid items-center gap-6 rounded-[2rem] bg-[var(--color-brand-ink)] p-6 text-white sm:grid-cols-[auto_1fr] sm:gap-8 sm:p-8">
-            <div className="relative mx-auto h-32 w-32 shrink-0 overflow-hidden rounded-full bg-white/10 sm:h-36 sm:w-36">
+            <div className="relative mx-auto h-36 w-36 shrink-0 overflow-hidden rounded-full bg-white ring-4 ring-[var(--color-brand-accent)]/60 sm:h-40 sm:w-40">
               {COLLE_IMAGE ? (
                 <Image
                   src={COLLE_IMAGE}
                   alt="Colle, Collaktivs maskot"
                   fill
-                  sizes="144px"
-                  className="object-cover"
+                  sizes="160px"
+                  className="object-cover object-[50%_15%]"
                 />
               ) : (
                 <span className="flex h-full items-center justify-center rounded-full border-2 border-dashed border-white/30 p-4 text-center text-[11px] font-bold text-white/60">
