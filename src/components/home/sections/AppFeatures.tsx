@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Camera, Flame, Leaf, ShoppingBag, Smartphone, type LucideIcon } from "lucide-react";
 import { Container } from "@/components/ui/Container";
+import { Reveal } from "../Reveal";
 import { Eyebrow, SectionTitle } from "./shared";
 
 // Lägg bilder från appen i public/app/ och sätt image till t.ex.
@@ -31,7 +32,7 @@ const features: { icon: LucideIcon; title: string; text: string; image?: string 
 
 function PhoneShot({ image, title }: { image?: string; title: string }) {
   return (
-    <div className="relative mx-auto aspect-[9/19] w-full max-w-[150px] rounded-[1.6rem] border-[5px] sm:max-w-[200px] sm:rounded-[2rem] sm:border-[6px] border-[var(--color-brand-ink)] bg-[var(--color-brand-secondary)] shadow-lg">
+    <div className="relative mx-auto aspect-[9/19] transition duration-300 group-hover:-translate-y-2 group-hover:-rotate-1 group-hover:shadow-xl motion-reduce:transition-none motion-reduce:group-hover:translate-y-0 motion-reduce:group-hover:rotate-0 w-full max-w-[150px] rounded-[1.6rem] border-[5px] sm:max-w-[200px] sm:rounded-[2rem] sm:border-[6px] border-[var(--color-brand-ink)] bg-[var(--color-brand-secondary)] shadow-lg">
       {image ? (
         <Image
           src={image}
@@ -56,29 +57,33 @@ export function AppFeatures() {
   return (
     <section className="py-16 sm:py-24">
       <Container>
-        <div className="mx-auto max-w-2xl text-center">
+        <Reveal className="mx-auto max-w-2xl text-center">
           <Eyebrow>Mer än bara rabatter</Eyebrow>
           <SectionTitle>
             Gör det hållbara resandet till en{" "}
             <span className="text-[var(--color-brand-primary)]">vana</span>
           </SectionTitle>
-        </div>
+        </Reveal>
 
         <ul className="mt-10 grid grid-cols-2 gap-x-4 gap-y-10 sm:mt-12 sm:gap-x-6 sm:gap-y-12 lg:grid-cols-4">
-          {features.map(({ icon: Icon, title, text, image }) => (
-            <li key={title} className="flex flex-col">
-              <PhoneShot image={image} title={title} />
-              <div className="mt-5 flex flex-col gap-2 sm:mt-6 sm:flex-row sm:items-start sm:gap-3">
-                <span className="flex h-9 w-9 shrink-0 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-[var(--color-brand-primary)]/10 text-[var(--color-brand-primary)]">
-                  <Icon className="h-5 w-5" />
-                </span>
-                <div>
-                  <h3 className="text-base font-extrabold leading-tight tracking-tight sm:text-lg">{title}</h3>
-                  <p className="mt-1 text-[13px] font-medium sm:text-[14.5px] leading-relaxed text-[var(--color-brand-muted)]">
-                    {text}
-                  </p>
+          {features.map(({ icon: Icon, title, text, image }, i) => (
+            <li key={title} className="group">
+              <Reveal delay={i * 90}>
+                <PhoneShot image={image} title={title} />
+                <div className="mt-5 flex flex-col gap-2 sm:mt-6 sm:flex-row sm:items-start sm:gap-3">
+                  <span className="flex h-9 w-9 shrink-0 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-[var(--color-brand-primary)]/10 text-[var(--color-brand-primary)]">
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <h3 className="text-base font-extrabold leading-tight tracking-tight sm:text-lg">
+                      {title}
+                    </h3>
+                    <p className="mt-1 text-[13px] font-medium sm:text-[14.5px] leading-relaxed text-[var(--color-brand-muted)]">
+                      {text}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </Reveal>
             </li>
           ))}
         </ul>

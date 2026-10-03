@@ -94,7 +94,14 @@ body {
    0–8 % står vid vänster hållplats, 8–42 % kör åt höger,
    42–58 % står vid höger hållplats (vänder vid 50 %), 58–92 % kör åt vänster.
    .bus-face vänder bussen, så lutning och hjul räknas alltid "framåt". */
+/* Bussen flyttas med transform (inte left) så att webbläsaren slipper räkna
+   om hela sidans layout i varje bildruta – annars hackar skrollningen.
+   Banan är en "container" så att 100cqw = banans bredd. */
+.bus-track {
+  container-type: inline-size;
+}
 .bus-ride {
+  will-change: transform;
   animation: bus-ride 12s ease-in-out infinite;
 }
 .bus-face {
@@ -113,9 +120,9 @@ body {
   animation: bus-wheel 12s ease-in-out infinite;
 }
 @keyframes bus-ride {
-  0%, 8% { left: 0%; }
-  42%, 58% { left: 100%; }
-  92%, 100% { left: 0%; }
+  0%, 8% { transform: translateX(0); }
+  42%, 58% { transform: translateX(100cqw); }
+  92%, 100% { transform: translateX(0); }
 }
 @keyframes bus-face {
   0% { transform: scaleX(1); }
@@ -147,7 +154,7 @@ body {
 }
 @media (prefers-reduced-motion: reduce) {
   .bus-ride, .bus-face, .bus-tilt, .bus-bob, .bus-wheel { animation: none; }
-  .bus-ride { left: 50%; }
+  .bus-ride { transform: translateX(50cqw); }
 }
 
 /* Biljett med grön kant: själva biljetten är grön och en ljus insida
@@ -194,4 +201,24 @@ body {
     radial-gradient(circle var(--inner-notch) at var(--inner-x) calc(0px - var(--edge)), transparent 98%, #000),
     radial-gradient(circle var(--inner-notch) at var(--inner-x) calc(100% + var(--edge)), transparent 98%, #000);
   mask-composite: intersect;
+}
+
+/* Innehåll som tonar in när man skrollar (se Reveal.tsx). Bara opacity och
+   transform animeras, så skrollningen förblir mjuk. */
+.reveal {
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reveal[data-reveal="hidden"] {
+  opacity: 0;
+  transform: translateY(28px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal[data-reveal="hidden"] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

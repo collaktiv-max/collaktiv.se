@@ -129,9 +129,10 @@ export function AudienceCards() {
       <div className="relative hidden h-16 grid-cols-2 gap-6 md:grid" aria-hidden="true">
         <div className="absolute inset-x-[25%] bottom-[15px] h-1 bg-[repeating-linear-gradient(90deg,var(--color-brand-primary)_0_14px,transparent_14px_22px)] opacity-35" />
         {/* Bussen håller sig mellan skyltarna så att den aldrig kör över dem. */}
-        <div className="absolute inset-x-[calc(25%+128px)] bottom-[17px] h-8">
-          <div className="bus-ride absolute bottom-0 left-0 -translate-x-1/2">
-            <div className="bus-face">
+        <div className="bus-track absolute inset-x-[calc(25%+128px)] bottom-[17px] h-8">
+          <div className="bus-ride absolute bottom-0 left-0">
+            {/* Centrerar bussen på sin position längs banan */}
+            <div className="bus-face -ml-8">
               <div className="bus-tilt">
                 <div className="bus-bob">
                   <Bus className="h-8 w-16 drop-shadow-sm" />
