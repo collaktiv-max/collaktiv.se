@@ -8,6 +8,9 @@ export function FinalCta() {
     <section className="py-16 sm:py-24">
       <Container className="text-center">
         <Reveal>
+          <p className="mx-auto mb-5 max-w-xl text-sm font-extrabold leading-snug text-[var(--color-brand-primary)] text-balance sm:text-base">
+            ”Varje resa i kollektivtrafiken räknas – tillsammans mot ett grönare Gävleborg!”
+          </p>
           <SectionTitle flush className="mx-auto max-w-2xl">
             Redo att börja samla <span className="text-[var(--color-brand-primary)]">poäng?</span>
           </SectionTitle>

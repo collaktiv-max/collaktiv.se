@@ -5,7 +5,6 @@ import { Container } from "@/components/ui/Container";
 import { HowItWorks } from "@/components/home/sections/HowItWorks";
 import { WhyCollaktiv } from "@/components/home/sections/WhyCollaktiv";
 import { AppFeatures } from "@/components/home/sections/AppFeatures";
-import { Together } from "@/components/home/sections/Together";
 import { Impact } from "@/components/home/sections/Impact";
 import { About } from "@/components/home/sections/About";
 import { ForBusinesses } from "@/components/home/sections/ForBusinesses";
@@ -38,7 +37,6 @@ export default function Home() {
         <HowItWorks />
         <WhyCollaktiv />
         <AppFeatures />
-        <Together />
         <Impact />
         <About />
         <ForBusinesses />
