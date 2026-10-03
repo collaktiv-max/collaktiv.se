@@ -28,8 +28,9 @@ Alla länkar finns i `src/lib/config.ts`:
 
 - `WAITLIST_URL` är adressen till väntelistan. Så länge den är `null` öppnar
   resenärsrutan en anmälan med pilotregionen förvald.
-- `PORTAL_URL` är adressen till företagsportalen. Så länge den är `null` leder
-  företagsrutan till kontaktsidan.
+- `PORTAL_URL` är adressen till företagsportalen, just nu
+  `https://partner.collaktiv.se`. Sätts den till `null` leder företagsknapparna
+  till kontaktsidan istället.
 
 ## Var regionanmälningarna sparas
 
