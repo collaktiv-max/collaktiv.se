@@ -7,7 +7,7 @@ import { cookies } from "next/headers";
 
 export const ADMIN_COOKIE = "collaktiv_admin";
 const SESSION_TTL_S = 12 * 60 * 60; // 12 timmar
-const MIN_PASSWORD_LENGTH = 12;
+const MIN_PASSWORD_LENGTH = 8;
 
 const encoder = new TextEncoder();
 
@@ -21,9 +21,11 @@ async function hmac(key: string, data: string) {
     encoder.encode(key),
     { name: "HMAC", hash: "SHA-256" },
     false,
-    ["sign"]
+    ["sign"],
   );
-  return toBase64Url(new Uint8Array(await crypto.subtle.sign("HMAC", cryptoKey, encoder.encode(data))));
+  return toBase64Url(
+    new Uint8Array(await crypto.subtle.sign("HMAC", cryptoKey, encoder.encode(data))),
+  );
 }
 
 function timingSafeEqual(a: string, b: string) {
@@ -41,6 +43,13 @@ export function getAdminPassword(): string | null {
   // man klistrar in det i Vercel – de räknas inte som en del av lösenordet.
   const pw = process.env.ADMIN_PASSWORD?.trim().replace(/^(["'])(.*)\1$/, "$2");
   return pw && pw.length >= MIN_PASSWORD_LENGTH ? pw : null;
+}
+
+// Varför admin inte är påslaget – visas på inloggningssidan.
+export function adminPasswordProblem(): "missing" | "too-short" | null {
+  const pw = process.env.ADMIN_PASSWORD?.trim().replace(/^(["'])(.*)\1$/, "$2");
+  if (!pw) return "missing";
+  return pw.length < MIN_PASSWORD_LENGTH ? "too-short" : null;
 }
 
 export { MIN_PASSWORD_LENGTH };
