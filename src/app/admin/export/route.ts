@@ -1,5 +1,5 @@
 import { isAdmin } from "@/lib/admin-auth";
-import { getAllRegionInterest } from "@/lib/region-interest-db";
+import { SOURCE_LABEL, contestSummary, getAllAdminEntries } from "@/lib/admin-entries";
 
 // Laddar ner alla anmälningar som CSV (öppnas direkt i Excel/Numbers).
 export async function GET() {
@@ -7,7 +7,7 @@ export async function GET() {
     return new Response("Inte inloggad.", { status: 401 });
   }
 
-  const entries = await getAllRegionInterest();
+  const entries = await getAllAdminEntries();
   const toLocal = new Intl.DateTimeFormat("sv-SE", {
     dateStyle: "short",
     timeStyle: "short",
@@ -16,9 +16,17 @@ export async function GET() {
   // Värden som börjar med = + - @ skulle Excel tolka som formler.
   const cell = (v: string) => `"${(/^[=+\-@]/.test(v) ? `'${v}` : v).replace(/"/g, '""')}"`;
   const lines = [
-    ["E-post", "Region", "Anmäld"].map(cell).join(";"),
+    ["E-post", "Källa", "Region", "Svar i tävlingen", "Anmäld"].map(cell).join(";"),
     ...entries.map((e) =>
-      [e.email, e.region, toLocal.format(new Date(e.createdAt))].map(cell).join(";")
+      [
+        e.email,
+        SOURCE_LABEL[e.source],
+        e.region ?? "",
+        contestSummary(e),
+        toLocal.format(new Date(e.createdAt)),
+      ]
+        .map(cell)
+        .join(";"),
     ),
   ];
   // BOM så att Excel läser å, ä och ö rätt.

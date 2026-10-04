@@ -6,5 +6,9 @@ export const metadata: Metadata = {
 };
 
 export default function AdminLayout({ children }: LayoutProps<"/admin">) {
-  return <div className="flex min-h-full flex-1 flex-col bg-[var(--color-brand-secondary)]">{children}</div>;
+  return (
+    <div className="flex min-h-full flex-1 flex-col bg-[var(--color-brand-secondary)]">
+      {children}
+    </div>
+  );
 }
