@@ -37,7 +37,9 @@ function timingSafeEqual(a: string, b: string) {
 
 // Null betyder att admin inte är påslaget (lösenord saknas eller är för kort).
 export function getAdminPassword(): string | null {
-  const pw = process.env.ADMIN_PASSWORD;
+  // Mellanslag/radbrytning eller citattecken runt värdet följer lätt med när
+  // man klistrar in det i Vercel – de räknas inte som en del av lösenordet.
+  const pw = process.env.ADMIN_PASSWORD?.trim().replace(/^(["'])(.*)\1$/, "$2");
   return pw && pw.length >= MIN_PASSWORD_LENGTH ? pw : null;
 }
 
@@ -47,7 +49,7 @@ export async function checkPassword(input: string) {
   const pw = getAdminPassword();
   if (!pw) return false;
   // Jämför hashar så att längden på lösenordet inte läcker via tid.
-  return timingSafeEqual(await hmac("compare", input), await hmac("compare", pw));
+  return timingSafeEqual(await hmac("compare", input.trim()), await hmac("compare", pw));
 }
 
 async function signingKey() {

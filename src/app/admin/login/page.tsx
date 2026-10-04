@@ -17,7 +17,7 @@ export default async function AdminLoginPage() {
         {enabled ? (
           <>
             <p className="mt-2 mb-6 text-[15px] font-medium text-[var(--color-brand-muted)]">
-              Logga in för att se anmälningarna.
+              Logga in med lösenordet som är satt som ADMIN_PASSWORD i Vercel (collaktiv.se-projektet). Det är inte samma inloggning som väntelistans admin.
             </p>
             <LoginForm />
           </>
