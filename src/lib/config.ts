@@ -13,7 +13,7 @@ export const WAITLIST_URL: string | null = null;
 // null för att istället leda företagsknapparna till kontaktsidan.
 export const PORTAL_URL: string | null = "https://partner.collaktiv.se";
 
-export const CONTACT_EMAIL = "collaktiv@gmail.com";
+export const CONTACT_EMAIL = "info@collaktiv.se";
 
 // Samma länkar som på väntelistan (collaktiv-max/v-ntelista).
 export const INSTAGRAM_URL =
