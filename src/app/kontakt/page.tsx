@@ -30,7 +30,7 @@ export default function KontaktPage() {
         </div>
       </div>
 
-      <div className="pt-10">
+      <div className="pt-8">
         <h2 className="text-2xl font-extrabold tracking-tight text-[var(--color-brand-ink)] sm:text-3xl">
           Vanliga frågor
         </h2>
