@@ -75,8 +75,9 @@ export default function OmOssPage() {
               Till startsidan
             </Link>
 
-            <div className="mt-6 grid gap-8 lg:grid-cols-[1.3fr_1fr] lg:items-start lg:gap-14">
-              <Reveal>
+            <div className="mt-6 grid gap-8 lg:grid-cols-[1.3fr_1fr] lg:gap-14">
+              {/* På dator fyller berättelsen + visionsrutan samma höjd som UF-rutan */}
+              <Reveal className="lg:flex lg:flex-col lg:items-start">
                 <Eyebrow>Om oss</Eyebrow>
                 <SectionTitle>
                   Vår <span className="text-[var(--color-brand-primary)]">berättelse</span>
@@ -88,6 +89,16 @@ export default function OmOssPage() {
                   motivationen att resa kollektivt och bidrar till ett grönare samhälle med mindre
                   utsläpp och mer gemenskap.
                 </p>
+
+                {/* Vår vision – som ruta på dator (på mobil ligger den som eget fält nedanför) */}
+                <div className="mt-8 hidden rounded-3xl bg-[var(--color-brand-primary)] p-7 text-white lg:mt-auto lg:block lg:self-stretch">
+                  <Eyebrow light>Vår vision</Eyebrow>
+                  <p className="mt-4 text-[1.65rem] font-extrabold leading-[1.18] tracking-tight text-balance">
+                    Kollektivtrafiken ska bli det{" "}
+                    <span className="text-[var(--color-brand-accent)]">självklara valet</span> för
+                    alla människor!
+                  </p>
+                </div>
               </Reveal>
 
               <Reveal delay={100}>
@@ -147,7 +158,7 @@ export default function OmOssPage() {
         </section>
 
         {/* Vår vision */}
-        <section className="bg-[var(--color-brand-primary)] py-14 text-white sm:py-20">
+        <section className="bg-[var(--color-brand-primary)] py-14 text-white sm:py-20 lg:hidden">
           <Container>
             <Reveal className="mx-auto max-w-3xl text-center">
               <Eyebrow light>Vår vision</Eyebrow>
