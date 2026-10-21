@@ -17,6 +17,7 @@ import { InstagramIcon, TikTokIcon } from "@/components/home/SocialIcons";
 import { Eyebrow, SectionTitle } from "@/components/home/sections/shared";
 import { Container } from "@/components/ui/Container";
 import { INSTAGRAM_URL, TIKTOK_URL } from "@/lib/config";
+import { PILOT_AWARDS, PILOT_STATS, PILOT_TEXT } from "@/lib/pilot";
 
 export const metadata: Metadata = { title: "Om oss – Collaktiv" };
 
@@ -74,7 +75,7 @@ export default function OmOssPage() {
               Till startsidan
             </Link>
 
-            <div className="mt-6 grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-end lg:gap-14">
+            <div className="mt-6 grid gap-8 lg:grid-cols-[1.3fr_1fr] lg:items-start lg:gap-14">
               <Reveal>
                 <Eyebrow>Om oss</Eyebrow>
                 <SectionTitle>
@@ -90,23 +91,56 @@ export default function OmOssPage() {
               </Reveal>
 
               <Reveal delay={100}>
-                <Link
-                  href="/#collaktiv-uf"
-                  className="group flex items-center gap-4 rounded-3xl bg-[var(--color-brand-ink)] p-6 text-white transition hover:-translate-y-1 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-7"
-                >
-                  <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[var(--color-brand-accent)] text-[var(--color-brand-ink)]">
-                    <Trophy className="h-7 w-7" />
-                  </span>
-                  <span className="min-w-0">
-                    <span className="block text-lg font-extrabold leading-snug">
-                      Ett tidigare UF-företag i Gävle…
+                <div className="rounded-3xl bg-[var(--color-brand-ink)] p-6 text-white sm:p-7">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--color-brand-accent)] text-[var(--color-brand-ink)]">
+                      <Trophy className="h-5 w-5" />
                     </span>
-                    <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-bold text-[var(--color-brand-accent)]">
-                      Läs om piloten och utmärkelserna
-                      <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-                    </span>
-                  </span>
-                </Link>
+                    <h2 className="text-lg font-extrabold leading-snug">
+                      Ett tidigare UF-företag i Gävle
+                    </h2>
+                  </div>
+                  <p className="mt-4 text-[14.5px] font-medium leading-relaxed text-white/80">
+                    {PILOT_TEXT}
+                  </p>
+
+                  <ul className="mt-5 grid grid-cols-2 gap-2">
+                    {PILOT_STATS.map((s) => (
+                      <li key={s.unit} className="rounded-2xl bg-white/[0.06] px-3.5 py-3">
+                        <span className="block whitespace-nowrap text-[1.35rem] font-extrabold leading-none tracking-tight text-[var(--color-brand-accent)] tabular-nums">
+                          {s.value}
+                        </span>
+                        <span className="mt-1 block text-[12.5px] font-bold text-white/80">
+                          {s.unit}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <ul className="mt-5 space-y-2.5">
+                    {PILOT_AWARDS.map(({ icon: Icon, place, text }) => (
+                      <li
+                        key={text}
+                        className="flex items-start gap-2.5 text-[13.5px] font-bold leading-snug"
+                      >
+                        <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-brand-accent)]" />
+                        <span>
+                          {place === "Vinnare" || place === "Kvalificerad"
+                            ? text
+                            : `${place} – ${text}`}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Link
+                    href="/#collaktiv-uf"
+                    className="group mt-6 inline-flex items-center gap-1.5 text-sm font-bold text-[var(--color-brand-accent)] hover:underline"
+                  >
+                    Läs mer om piloten
+                    <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                  </Link>
+                </div>
               </Reveal>
             </div>
           </Container>
