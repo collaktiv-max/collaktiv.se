@@ -102,7 +102,70 @@ export function EntriesTable({ entries }: { entries: AdminEntry[] }) {
         </label>
       </div>
 
-      <div className={`mt-4 overflow-x-auto ${pending ? "opacity-60" : ""}`}>
+      {/* Mobil: ett kort per anmälan, så att allt syns utan att skrolla i sidled. */}
+      <ul className={`mt-4 space-y-3 md:hidden ${pending ? "opacity-60" : ""}`}>
+        {rows.map((e) => (
+          <li
+            key={`${e.source}-${e.id}`}
+            className="rounded-2xl border border-[var(--color-brand-border)] p-4"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <p className="min-w-0 text-[15px] font-bold [overflow-wrap:anywhere]">{e.email}</p>
+              {e.source === "collaktiv" && (
+                <button
+                  type="button"
+                  onClick={() => handleDelete(e)}
+                  disabled={pending}
+                  aria-label={`Ta bort ${e.email}`}
+                  className="-mt-1.5 shrink-0 rounded-full p-2 text-[var(--color-brand-muted)] transition hover:bg-red-50 hover:text-red-700"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+            <div className="mt-2 flex flex-wrap items-center gap-1.5">
+              <span
+                className={`inline-block rounded-full px-2.5 py-1 text-xs font-extrabold ${badge[e.source]}`}
+              >
+                {SOURCE_LABEL[e.source]}
+              </span>
+              {inBoth.has(e.email) && (
+                <span className="inline-block rounded-full bg-[var(--color-brand-secondary)] px-2 py-0.5 text-[11px] font-bold text-[var(--color-brand-muted)]">
+                  finns i båda
+                </span>
+              )}
+            </div>
+            {e.region && (
+              <p className="mt-2 text-sm font-semibold">
+                <span className="text-[var(--color-brand-muted)]">Region: </span>
+                {e.region}
+              </p>
+            )}
+            {e.contest && (
+              <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-[13px] leading-snug">
+                <dt className="font-semibold text-[var(--color-brand-muted)]">Gissning</dt>
+                <dd className="font-bold tabular-nums">{e.contest.busGuess}</dd>
+                <dt className="font-semibold text-[var(--color-brand-muted)]">Rabatt</dt>
+                <dd className="font-medium">{e.contest.rabatt}</dd>
+                {e.contest.localBusiness && (
+                  <>
+                    <dt className="font-semibold text-[var(--color-brand-muted)]">Lokalt</dt>
+                    <dd className="font-medium [overflow-wrap:anywhere]">
+                      {e.contest.localBusiness}
+                    </dd>
+                  </>
+                )}
+              </dl>
+            )}
+            <p className="mt-2 text-xs font-semibold tabular-nums text-[var(--color-brand-muted)]">
+              Anmäld {dateFormat.format(new Date(e.createdAt))}
+            </p>
+          </li>
+        ))}
+      </ul>
+
+      {/* Dator och surfplatta: tabell */}
+      <div className={`mt-4 hidden overflow-x-auto md:block ${pending ? "opacity-60" : ""}`}>
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-[var(--color-brand-border)] text-[var(--color-brand-muted)]">
@@ -173,12 +236,12 @@ export function EntriesTable({ entries }: { entries: AdminEntry[] }) {
             ))}
           </tbody>
         </table>
-        {rows.length === 0 && (
-          <p className="py-8 text-center text-[15px] font-medium text-[var(--color-brand-muted)]">
-            {entries.length === 0 ? "Inga anmälningar än." : "Inga träffar."}
-          </p>
-        )}
       </div>
+      {rows.length === 0 && (
+        <p className="py-8 text-center text-[15px] font-medium text-[var(--color-brand-muted)]">
+          {entries.length === 0 ? "Inga anmälningar än." : "Inga träffar."}
+        </p>
+      )}
     </section>
   );
 }
