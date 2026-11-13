@@ -2,17 +2,31 @@
 
 import { useActionState, useState, useTransition } from "react";
 import { Upload } from "lucide-react";
-import { extractEmails } from "@/lib/relaunch-shared";
+import { parseImport } from "@/lib/relaunch-shared";
 import { clearAllRelaunchUsers, importRelaunchUsers } from "./actions";
+
+const lists = [
+  {
+    value: "info",
+    label: "Utan samtycke",
+    hint: "Får bara informationsmail.",
+  },
+  {
+    value: "consent",
+    label: "Har godkänt utskick",
+    hint: "Får nyheter och erbjudanden. Finns adressen redan utan samtycke flyttas den hit.",
+  },
+] as const;
 
 export function ImportForm({ hasUsers }: { hasUsers: boolean }) {
   const [result, action, pending] = useActionState(importRelaunchUsers, null);
   const [text, setText] = useState("");
+  const [list, setList] = useState<(typeof lists)[number]["value"]>("info");
   const [clearing, startClear] = useTransition();
-  const count = extractEmails(text).length;
+  const count = parseImport(text).length;
 
   function handleClear() {
-    if (!confirm("Ta bort hela listan? Det går inte att ångra.")) return;
+    if (!confirm("Ta bort alla adresser i båda listorna? Det går inte att ångra.")) return;
     startClear(() => clearAllRelaunchUsers());
   }
 
@@ -20,8 +34,8 @@ export function ImportForm({ hasUsers }: { hasUsers: boolean }) {
     <section className="rounded-2xl bg-white p-6 shadow-sm">
       <h2 className="text-lg font-extrabold">Lägg till adresser</h2>
       <p className="mt-1 text-sm font-medium text-[var(--color-brand-muted)]">
-        Klistra in listan – en adress per rad, eller hur den än är formaterad. Dubbletter hoppas
-        över. Adresserna sparas i databasen, inte i koden.
+        Klistra in en lista med adresser eller en CSV-export (Namn, E-post, Samtycke gavs).
+        Dubbletter hoppas över. Adresserna sparas i databasen, inte i koden.
       </p>
       <form
         action={(fd) => {
@@ -30,6 +44,34 @@ export function ImportForm({ hasUsers }: { hasUsers: boolean }) {
         }}
         className="mt-4 space-y-3"
       >
+        <fieldset className="grid gap-2 sm:grid-cols-2">
+          <legend className="sr-only">Vilken lista?</legend>
+          {lists.map((l) => (
+            <label
+              key={l.value}
+              className={`flex cursor-pointer gap-3 rounded-2xl border p-3 transition ${
+                list === l.value
+                  ? "border-[var(--color-brand-primary)] bg-[var(--color-brand-primary)]/5"
+                  : "border-[var(--color-brand-border)]"
+              }`}
+            >
+              <input
+                type="radio"
+                name="list"
+                value={l.value}
+                checked={list === l.value}
+                onChange={() => setList(l.value)}
+                className="mt-1 h-4 w-4 accent-[var(--color-brand-primary)]"
+              />
+              <span>
+                <span className="block text-sm font-extrabold">{l.label}</span>
+                <span className="block text-xs font-semibold text-[var(--color-brand-muted)]">
+                  {l.hint}
+                </span>
+              </span>
+            </label>
+          ))}
+        </fieldset>
         <label className="block">
           <span className="sr-only">E-postadresser</span>
           <textarea
@@ -53,7 +95,8 @@ export function ImportForm({ hasUsers }: { hasUsers: boolean }) {
           {result && (
             <p role="status" className="text-sm font-bold">
               {result.added} nya sparade
-              {result.duplicates > 0 && `, ${result.duplicates} fanns redan`}.
+              {result.upgraded > 0 && `, ${result.upgraded} flyttade till samtycke`}
+              {result.unchanged > 0 && `, ${result.unchanged} fanns redan`}.
             </p>
           )}
           {hasUsers && (
@@ -63,7 +106,7 @@ export function ImportForm({ hasUsers }: { hasUsers: boolean }) {
               disabled={clearing}
               className="ml-auto rounded-full px-3 py-2 text-sm font-bold text-[var(--color-brand-muted)] transition hover:bg-red-50 hover:text-red-700"
             >
-              Töm listan
+              Töm listorna
             </button>
           )}
         </div>

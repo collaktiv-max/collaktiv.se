@@ -3,13 +3,17 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { isAdmin } from "@/lib/admin-auth";
-import { addRelaunchUsers, clearRelaunchUsers, deleteRelaunchUser } from "@/lib/relaunch-db";
-import { extractEmails } from "@/lib/relaunch-shared";
+import {
+  clearRelaunchUsers,
+  deleteRelaunchUser,
+  importRelaunchUsers as importUsers,
+  type ImportCounts,
+} from "@/lib/relaunch-db";
+import { parseImport } from "@/lib/relaunch-shared";
 
-export interface ImportResult {
+export interface ImportResult extends ImportCounts {
   found: number;
-  added: number;
-  duplicates: number;
+  consent: boolean;
 }
 
 export async function importRelaunchUsers(
@@ -19,10 +23,11 @@ export async function importRelaunchUsers(
   if (!(await isAdmin())) redirect("/admin/login");
   const text = formData.get("emails");
   if (typeof text !== "string") return null;
-  const emails = extractEmails(text);
-  const added = await addRelaunchUsers(emails);
+  const consent = formData.get("list") === "consent";
+  const rows = parseImport(text);
+  const counts = await importUsers(rows, consent);
   revalidatePath("/admin/nylansering");
-  return { found: emails.length, added, duplicates: emails.length - added };
+  return { found: rows.length, consent, ...counts };
 }
 
 export async function removeRelaunchUser(email: string) {
