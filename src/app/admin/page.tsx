@@ -1,10 +1,9 @@
 import { redirect } from "next/navigation";
-import { Download, LogOut } from "lucide-react";
-import { Logo } from "@/components/ui/Logo";
+import { Download } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { isAdmin } from "@/lib/admin-auth";
 import { getAllAdminEntries, type AdminEntry } from "@/lib/admin-entries";
-import { logout } from "./actions";
+import { AdminHeader } from "./AdminHeader";
 import { EntriesTable } from "./EntriesTable";
 
 function summarize(entries: AdminEntry[]) {
@@ -24,7 +23,11 @@ function summarize(entries: AdminEntry[]) {
 
   const stats = [
     { label: "Unika e-postadresser", value: unique },
-    { label: "Från collaktiv.se", value: fromSite, dot: "bg-[var(--color-brand-primary)]" },
+    {
+      label: "Från collaktiv.se",
+      value: fromSite,
+      dot: "bg-[var(--color-brand-primary)]",
+    },
     {
       label: "Från väntelistan (tävlingen)",
       value: entries.length - fromSite,
@@ -45,25 +48,7 @@ export default async function AdminPage() {
 
   return (
     <>
-      <header className="border-b border-[var(--color-brand-border)] bg-white">
-        <Container className="flex h-16 items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Logo />
-            <span className="rounded-full bg-[var(--color-brand-primary)]/10 px-2.5 py-1 text-xs font-extrabold text-[var(--color-brand-primary)]">
-              Admin
-            </span>
-          </div>
-          <form action={logout}>
-            <button
-              type="submit"
-              className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-bold text-[var(--color-brand-muted)] transition hover:bg-[var(--color-brand-secondary)] hover:text-[var(--color-brand-ink)]"
-            >
-              <LogOut className="h-4 w-4" />
-              Logga ut
-            </button>
-          </form>
-        </Container>
-      </header>
+      <AdminHeader active="/admin" />
 
       <main className="py-10">
         <Container className="space-y-6">
