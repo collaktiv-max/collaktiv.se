@@ -5,6 +5,7 @@ import { isAdmin } from "@/lib/admin-auth";
 import { getAllAdminEntries, type AdminEntry } from "@/lib/admin-entries";
 import { AdminHeader } from "./AdminHeader";
 import { EntriesTable } from "./EntriesTable";
+import { WaitlistImport } from "./WaitlistImport";
 
 function summarize(entries: AdminEntry[]) {
   // Regioner finns bara för anmälningar från collaktiv.se – väntelistans
@@ -81,6 +82,8 @@ export default async function AdminPage() {
           </dl>
 
           <EntriesTable entries={entries} />
+
+          <WaitlistImport />
 
           <section className="rounded-2xl bg-white p-6 shadow-sm">
             <h2 className="text-lg font-extrabold">Per region</h2>

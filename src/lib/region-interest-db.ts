@@ -110,3 +110,44 @@ export async function deleteRegionInterest(id: string) {
   await ensureTable();
   await sql()`DELETE FROM region_interest WHERE id = ${id}`;
 }
+
+/**
+ * Lägger in många anmälningar på en gång (från /admin). createdAt kan
+ * sättas till när personen faktiskt anmälde sig. Returnerar antal nya.
+ */
+export async function addRegionInterestBulk(
+  region: Region,
+  rows: Array<{ email: string; createdAt: string | null }>,
+): Promise<number> {
+  if (rows.length === 0) return 0;
+  const now = new Date().toISOString();
+  const entries: RegionInterest[] = rows.map((r) => ({
+    id: randomUUID(),
+    region,
+    email: r.email,
+    createdAt: r.createdAt ?? now,
+  }));
+
+  if (!databaseUrl) {
+    const existing = await readAllFromFile();
+    const taken = new Set(existing.filter((e) => e.region === region).map((e) => e.email));
+    const fresh = entries.filter((e) => !taken.has(e.email));
+    await mkdir(path.dirname(DATA_FILE), { recursive: true });
+    await writeFile(DATA_FILE, JSON.stringify([...existing, ...fresh], null, 2), "utf-8");
+    return fresh.length;
+  }
+
+  await ensureTable();
+  const inserted = (await sql()`
+    INSERT INTO region_interest (id, region, email, created_at)
+    SELECT id, ${region}, email, created_at::timestamptz
+    FROM unnest(
+      ${entries.map((e) => e.id)}::text[],
+      ${entries.map((e) => e.email)}::text[],
+      ${entries.map((e) => e.createdAt)}::text[]
+    ) AS t(id, email, created_at)
+    ON CONFLICT (region, email) DO NOTHING
+    RETURNING id
+  `) as unknown[];
+  return inserted.length;
+}
